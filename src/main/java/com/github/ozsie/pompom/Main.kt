@@ -3,8 +3,8 @@ package com.github.ozsie.pompom
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-private const val DEFAULT_POM = "./pompom.json"
-private const val TEMP_OUTPUT = "./temp.pom.xml"
+private const val DEFAULT_POM_POM = "./pompom.json"
+private const val OUTPUT_POM_XML = "./pom.xml"
 
 private const val TIMEOUT: Long = 60
 
@@ -15,15 +15,15 @@ fun main(args : Array<String>) {
             if (args.size == 2) {
                 println(generate(args[1]))
             } else {
-                println(generate(DEFAULT_POM))
+                println(generate(DEFAULT_POM_POM))
             }
         }
         else -> run {
             println("Generating POM")
-            File(TEMP_OUTPUT).printWriter().use { out ->
-                out.print(generate(DEFAULT_POM))
+            File(OUTPUT_POM_XML).printWriter().use { out ->
+                out.print(generate(DEFAULT_POM_POM))
             }
-            val mvnProcess = ProcessBuilder("mvn", "-f", TEMP_OUTPUT, *args)
+            val mvnProcess = ProcessBuilder("mvn", "-f", OUTPUT_POM_XML, *args)
                     .directory(File("."))
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
