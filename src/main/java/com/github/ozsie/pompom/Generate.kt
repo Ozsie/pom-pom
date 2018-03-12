@@ -38,7 +38,7 @@ fun generate(pomFile: String): String {
             pomXml.addNode(buildDependencies(dependencies))
         }
         if (build != null) {
-            pomXml.addNode(buildBuild(build))
+            pomXml.addNode(buildBuild(build, artifactId))
         }
         if (pluginRepositories != null) {
             pomXml.addNode(buildRepositories("pluginRepositories", pluginRepositories))

@@ -24,7 +24,7 @@
   },
 
   "build": {
-    "finalName": "mvn-json",
+    "finalName": "pom-pom",
     "plugins": {
       "org.jetbrains.kotlin:kotlin-maven-plugin": {
         "version": "${kotlin.version}",
@@ -97,7 +97,8 @@
     "pomPomPlugins": {
       "$kotlin.executable": {
         "mainClass": "${main.class}",
-        "descriptorRef": "jar-with-dependencies"
+        "descriptorRef": "jar-with-dependencies",
+        "finalName": "SA"
       }
     }
   },
@@ -129,9 +130,9 @@
   },
 
   "scm": {
-    "url": "https://github.com/ozsie/mvn-json",
-    "connection": "scm:git:git@github.com:ozsie/mvn-json.git",
-    "developerConnection": "scm:git:git@github.com:ozsie/mvn-json.git",
+    "url": "https://github.com/ozsie/pom-pom",
+    "connection": "scm:git:git@github.com:ozsie/pom-pom.git",
+    "developerConnection": "scm:git:git@github.com:ozsie/pom-pom.git",
     "tag": "HEAD"
   },
 
@@ -139,7 +140,7 @@
     "repository": {
       "id": "bintray-ozsie-maven",
       "name": "ozsie-maven",
-      "url": "https: //api.bintray.com/maven/ozsie/maven/mvn-json/;publish=1"
+      "url": "https: //api.bintray.com/maven/ozsie/maven/pom-pom/;publish=1"
     }
   }
 }

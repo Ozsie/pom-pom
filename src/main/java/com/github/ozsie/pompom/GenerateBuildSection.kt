@@ -22,9 +22,11 @@ fun getPluginAdapter(): JsonAdapter<Plugin> {
     return moshi.adapter(Plugin::class.java)
 }
 
-fun buildBuild(build: Build): Node {
+fun buildBuild(build: Build, artifactId: String): Node {
     return xml("build") {
+        var finalName = artifactId
         if (build.finalName != null) {
+            finalName = build.finalName
             "finalName" { -"${build.finalName}" }
         }
         var pluginsNode: Node? = null
@@ -47,7 +49,7 @@ fun buildBuild(build: Build): Node {
                 val value = it.value
                 when(key) {
                     "\$kotlin.executable" -> {
-                        buildPluginsForExecutableKotlin(pluginsNode!!, value)
+                        buildPluginsForExecutableKotlin(pluginsNode!!, value, finalName)
                     }
                 }
             }
@@ -55,7 +57,7 @@ fun buildBuild(build: Build): Node {
     }
 }
 
-fun buildPluginsForExecutableKotlin(pluginsNode: Node, plugin: Map<String, String>) {
+fun buildPluginsForExecutableKotlin(pluginsNode: Node, plugin: Map<String, String>, finalName: String?) {
     val adapter = getPluginAdapter()
     "/maven-jar-plugin.json".asResource {
         var modified = it.
@@ -85,6 +87,16 @@ fun buildPluginsForExecutableKotlin(pluginsNode: Node, plugin: Map<String, Strin
                 modified = modified.replace("\$version", plugin["mvnAssemblyVersion"].toString())
             } else {
                 modified = modified.replace("\$version", "2.6")
+            }
+            if (plugin["finalName"] != null) {
+                modified = modified.replace("\$finalName", "$finalName-${plugin["finalName"].toString()}")
+            } else {
+                modified = modified.replace("\$finalName", "$finalName-${plugin["descriptorRef"].toString()}")
+            }
+            if (plugin["appendAssemblyId"] != null) {
+                modified = modified.replace("\$appendAssemblyId", plugin["appendAssemblyId"].toString())
+            } else {
+                modified = modified.replace("\$appendAssemblyId", "false")
             }
 
             val mavenAssemblyPlugin = adapter.fromJson(modified)

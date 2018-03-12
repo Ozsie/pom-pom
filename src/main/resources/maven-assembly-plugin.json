@@ -5,6 +5,7 @@
       "phase": "package",
       "goals": ["single"],
       "configuration": {
+        "finalName": "$finalName",
         "archive": {
           "manifest": {
             "mainClass": "$mainClass"
@@ -12,7 +13,8 @@
         },
         "descriptorRefs": {
           "descriptorRef": "$descriptorRef"
-        }
+        },
+        "appendAssemblyId": "$appendAssemblyId"
       }
     }
   }
