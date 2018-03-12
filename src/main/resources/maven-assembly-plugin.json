@@ -1,0 +1,19 @@
+{
+  "version": "$version",
+  "executions": {
+    "make-assembly": {
+      "phase": "package",
+      "goals": ["single"],
+      "configuration": {
+        "archive": {
+          "manifest": {
+            "mainClass": "$mainClass"
+          }
+        },
+        "descriptorRefs": {
+          "descriptorRef": "$descriptorRef"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "modelVersion": "4.0.0",
+  "artifact": "com.github.ozsie:pom-pom",
+  "version": "1.0.0-SNAPSHOT",
+  "packaging": "jar",
+
+  "properties": {
+    "java.version": "1.8",
+    "kotlin.version": "1.2.30",
+    "detekt.version": "1.0.0.RC6-3",
+    "main.class": "com.github.ozsie.pompom.MainKt"
+  },
+
+  "dependencies": {
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "${kotlin.version}",
+    "org.jetbrains.kotlin:kotlin-stdlib": "${kotlin.version}",
+    "org.jetbrains.kotlin:kotlin-reflect": "${kotlin.version}",
+    "com.squareup.moshi:moshi": "1.5.0",
+    "com.squareup.moshi:moshi-kotlin": "1.5.0",
+    "org.redundent:kotlin-xml-builder": "1.4",
+    "test": {
+      "junit:junit": "4.12"
+    }
+  },
+
+  "build": {
+    "finalName": "mvn-json",
+    "plugins": {
+      "org.jetbrains.kotlin:kotlin-maven-plugin": {
+        "version": "${kotlin.version}",
+        "configuration": {
+          "jvmTarget": "1.8"
+        },
+        "executions": {
+          "compile": {
+            "phase": "compile",
+            "goals": ["compile"]
+          },
+          "test-compile": {
+            "phase": "test-compile",
+            "goals": ["test-compile"]
+          }
+        },
+        "dependencies": {
+          "org.jetbrains.kotlin:kotlin-maven-allopen": "${kotlin.version}"
+        }
+      },
+      "org.apache.maven.plugins:maven-compiler-plugin": {
+        "configuration": {
+          "source": "${java.version}",
+          "target": "${java.version}"
+        }
+      },
+      "org.apache.maven.plugins:maven-antrun-plugin": {
+        "version": "1.8",
+        "executions": {
+          "detekt": {
+            "phase": "verify",
+            "configuration": {
+              "target": {
+                "$attributes": [
+                  {"name": "detekt"}
+                ],
+                "java": {
+                  "$attributes": [
+                    {"taskname": "detekt"},
+                    {"dir": "${basedir}"},
+                    {"fork": "true"},
+                    {"failonerror": "true"},
+                    {"classname": "io.gitlab.arturbosch.detekt.cli.Main"},
+                    {"classpathref": "maven.plugin.classpath"}
+                  ],
+                  "$repeat": {
+                    "$key": "arg",
+                    "$entries": [
+                      { "$attributes": [{"value": "-i"},{"value": "-i"}] },
+                      { "$attributes": [{"value": "${basedir}/src"}] },
+                      { "$attributes": [{"value": "-f"}] },
+                      { "$attributes": [{"value": ".*test.*"}] },
+                      { "$attributes": [{"value": "-o"}] },
+                      { "$attributes": [{"value": "${basedir}/detekt"}] },
+                      { "$attributes": [{"value": "-c"}] },
+                      { "$attributes": [{"value": "${basedir}/detekt.yml"}]}
+                    ]
+                  }
+                }
+              }
+            },
+            "goals": ["run"]
+          }
+        },
+        "dependencies": {
+          "io.gitlab.arturbosch.detekt:detekt-cli": "1.0.0.RC6-3"
+        }
+      }
+    },
+    "pomPomPlugins": {
+      "$kotlin.executable": {
+        "mainClass": "${main.class}",
+        "descriptorRef": "jar-with-dependencies"
+      }
+    }
+  },
+
+  "pluginRepositories": {
+    "arturbosch-code-analysis": {
+      "name": "arturbosch-code-analysis (for detekt)",
+      "url": "https://dl.bintray.com/arturbosch/code-analysis/",
+      "layout": "default",
+      "releases": {
+        "enabled": true,
+        "updatePolicy": "never"
+      },
+      "snapshots": {
+        "enabled": false,
+        "updatePolicy": "never"
+      }
+    }
+  },
+
+  "repositories": {
+    "bintray-redundent-maven": {
+      "snapshots": {
+        "enabled": false
+      },
+      "name": "bintray",
+      "url": "https://dl.bintray.com/redundent/maven"
+    }
+  },
+
+  "scm": {
+    "url": "https://github.com/ozsie/mvn-json",
+    "connection": "scm:git:git@github.com:ozsie/mvn-json.git",
+    "developerConnection": "scm:git:git@github.com:ozsie/mvn-json.git",
+    "tag": "HEAD"
+  },
+
+  "distributionManagement": {
+    "repository": {
+      "id": "bintray-ozsie-maven",
+      "name": "ozsie-maven",
+      "url": "https: //api.bintray.com/maven/ozsie/maven/mvn-json/;publish=1"
+    }
+  }
+}

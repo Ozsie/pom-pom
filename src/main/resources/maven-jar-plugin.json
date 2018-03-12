@@ -1,0 +1,11 @@
+{
+  "version": "$version",
+  "configuration": {
+    "archive": {
+      "manifest": {
+        "addClasspath": "$addClasspath",
+        "mainClass": "$mainClass"
+      }
+    }
+  }
+}
