@@ -1,18 +1,53 @@
-package com.github.ozsie.pompom
+package com.github.ozsie.pompom.generator
 
-import com.github.ozsie.pompom.model.DistributionManagement
+import com.github.ozsie.pompom.NullPomException
+import com.github.ozsie.pompom.generator.json.getDependencies
+import com.github.ozsie.pompom.generator.json.getProperties
+import com.github.ozsie.pompom.generator.json.getText
+import com.github.ozsie.pompom.generator.xml.*
 import com.github.ozsie.pompom.model.Pom
-import com.github.ozsie.pompom.model.SCM
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import okio.Okio
 import org.redundent.kotlin.xml.Node
+import org.redundent.kotlin.xml.parse
 import org.redundent.kotlin.xml.xml
 import java.io.File
 import java.io.InputStream
 
-fun generate(pomFile: String): String {
+fun generateJson(xmlFile: String): String {
+    File(xmlFile).inputStream().use {
+        val xml = parse(it)
+
+        var modelVersion = "4.0.0"
+        var artifactId = ""
+        var groupId = ""
+        var version = ""
+        var packaging = "jar"
+        var properties: Map<String,String>? = HashMap<String, String>()
+        var dependencies: Map<String, Any>? = HashMap<String, Any>()
+        for (element in xml.children) {
+            if (element is Node) {
+                when (element.nodeName) {
+                    "modelVersion" -> { modelVersion = element.getText() }
+                    "artifactId" -> { artifactId = element.getText() }
+                    "groupId" -> { groupId = element.getText() }
+                    "version" -> { version = element.getText() }
+                    "packaging" -> { packaging = element.getText() }
+                    "properties" -> { properties = element.getProperties() }
+                    "dependencies" -> { dependencies = element.getDependencies() }
+                    "build" -> {}
+                }
+            }
+        }
+        val pom = Pom(modelVersion, "$groupId:$artifactId", version, packaging, properties, dependencies,
+                null, null, null, null, null)
+        return getPomAdapter().toJson(pom)
+    }
+}
+
+fun generateXml(pomFile: String): String {
     val adapter = getPomAdapter()
     val inputStream: InputStream = File(pomFile).inputStream()
     val pom = adapter.fromJson(Okio.buffer(Okio.source(inputStream)))
@@ -53,31 +88,6 @@ fun generate(pomFile: String): String {
             pomXml.addNode(buildDistributionManagement(distributionManagement))
         }
         return pomXml.toString()
-    }
-}
-
-fun buildDistributionManagement(distributionManagement: DistributionManagement): Node = with(distributionManagement) {
-    return xml("distributionManagement") {
-        if (repository != null) {
-            buildRepository("repository", repository.id!!, repository)
-        }
-    }
-}
-
-fun buildSCM(scm: SCM): Node = with(scm) {
-    return xml("scm") {
-        "url" { -url }
-        "connection" { -connection }
-        "developerConnection" { -developerConnection}
-        "tag" { -tag }
-    }
-}
-
-fun buildProperties(properties: Map<String, String>): Node = with(properties) {
-    return xml("properties") {
-        properties.forEach {
-            it.key { -it.value }
-        }
     }
 }
 

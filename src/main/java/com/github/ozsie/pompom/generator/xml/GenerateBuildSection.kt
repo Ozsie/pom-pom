@@ -1,10 +1,10 @@
-package com.github.ozsie.pompom
+package com.github.ozsie.pompom.generator.xml
 
 import com.github.ozsie.pompom.model.Build
 import com.github.ozsie.pompom.model.Execution
 import com.github.ozsie.pompom.model.Plugin
-import com.github.ozsie.pompom.plugins.buildPluginForMvnCompiler
-import com.github.ozsie.pompom.plugins.buildPluginsForExecutableKotlin
+import com.github.ozsie.pompom.generator.xml.plugins.buildPluginForMvnCompiler
+import com.github.ozsie.pompom.generator.xml.plugins.buildPluginsForExecutableKotlin
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi

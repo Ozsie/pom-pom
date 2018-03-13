@@ -1,4 +1,4 @@
-package com.github.ozsie.pompom
+package com.github.ozsie.pompom.generator.xml
 
 import org.redundent.kotlin.xml.Node
 import org.redundent.kotlin.xml.xml

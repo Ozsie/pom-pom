@@ -198,22 +198,6 @@
 					org.apache.maven.plugins
 				</groupId>
 				<artifactId>
-					maven-compiler-plugin
-				</artifactId>
-				<configuration>
-					<source>
-						${java.version}
-					</source>
-					<target>
-						${java.version}
-					</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>
-					org.apache.maven.plugins
-				</groupId>
-				<artifactId>
 					maven-antrun-plugin
 				</artifactId>
 				<version>
@@ -273,7 +257,7 @@
 					maven-jar-plugin
 				</artifactId>
 				<version>
-					2.6
+					3.0.2
 				</version>
 				<configuration>
 					<archive>
@@ -296,7 +280,7 @@
 					maven-assembly-plugin
 				</artifactId>
 				<version>
-					2.6
+					3.1.0
 				</version>
 				<executions>
 					<execution>
@@ -333,6 +317,25 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>
+					org.apache.maven.plugins
+				</groupId>
+				<artifactId>
+					maven-compiler-plugin
+				</artifactId>
+				<version>
+					3.7.0
+				</version>
+				<configuration>
+					<source>
+						${java.version}
+					</source>
+					<target>
+						${java.version}
+					</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

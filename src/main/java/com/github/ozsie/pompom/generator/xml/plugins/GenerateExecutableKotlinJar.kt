@@ -1,6 +1,9 @@
-package com.github.ozsie.pompom.plugins
+package com.github.ozsie.pompom.generator.xml.plugins
 
 import com.github.ozsie.pompom.*
+import com.github.ozsie.pompom.generator.xml.asResource
+import com.github.ozsie.pompom.generator.xml.buildPlugin
+import com.github.ozsie.pompom.generator.xml.getPluginAdapter
 import org.redundent.kotlin.xml.Node
 
 fun Node.buildPluginsForExecutableKotlin(plugin: Map<String, String>, finalName: String?) {
@@ -45,7 +48,7 @@ fun Node.buildPluginsForExecutableKotlin(plugin: Map<String, String>, finalName:
             if (plugin["appendAssemblyId"] != null) {
                 modified = modified.replace("\$appendAssemblyId", plugin["appendAssemblyId"].toString())
             } else {
-                val appendAssemblyId = properties.getProperty("maven-assembly-plugin.addClasspath")
+                val appendAssemblyId = properties.getProperty("maven-assembly-plugin.appendAssemblyId")
                 modified = modified.replace("\$appendAssemblyId", appendAssemblyId)
             }
 

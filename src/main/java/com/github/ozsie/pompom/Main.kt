@@ -1,5 +1,7 @@
 package com.github.ozsie.pompom
 
+import com.github.ozsie.pompom.generator.generateJson
+import com.github.ozsie.pompom.generator.generateXml
 import java.io.File
 import java.util.Properties
 import java.util.concurrent.TimeUnit
@@ -19,20 +21,25 @@ fun String.asProperties(): Properties {
 }
 
 fun main(args : Array<String>) {
-
     when(args[0]) {
-        "build" -> println("build")
-        "generate" -> run {
+        "generateXml" -> run {
             if (args.size == 2) {
-                println(generate(args[1]))
+                println(generateXml(args[1]))
             } else {
-                println(generate(DEFAULT_POM_POM))
+                println(generateXml(DEFAULT_POM_POM))
+            }
+        }
+        "generateJson" -> run {
+            if (args.size == 2) {
+                println(generateJson(args[1]))
+            } else {
+                println(generateJson(OUTPUT_POM_XML))
             }
         }
         else -> run {
             println("Generating POM")
             File(OUTPUT_POM_XML).printWriter().use { out ->
-                out.print(generate(DEFAULT_POM_POM))
+                out.print(generateXml(DEFAULT_POM_POM))
             }
             val mvnProcess = ProcessBuilder("mvn", "-f", OUTPUT_POM_XML, *args)
                     .directory(File("."))

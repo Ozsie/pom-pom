@@ -1,4 +1,4 @@
-detekt-coverity-report.iml
+*.iml
 .idea
 target
 detekt/**

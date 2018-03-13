@@ -1,6 +1,9 @@
-package com.github.ozsie.pompom.plugins
+package com.github.ozsie.pompom.generator.xml.plugins
 
 import com.github.ozsie.pompom.*
+import com.github.ozsie.pompom.generator.xml.asResource
+import com.github.ozsie.pompom.generator.xml.buildPlugin
+import com.github.ozsie.pompom.generator.xml.getPluginAdapter
 import org.redundent.kotlin.xml.Node
 
 fun Node.buildPluginForMvnCompiler(plugin: Map<String, String>) {
@@ -10,7 +13,7 @@ fun Node.buildPluginForMvnCompiler(plugin: Map<String, String>) {
         if (plugin["version"] != null) {
             modified = modified.replace("\$version", plugin["version"].toString())
         } else {
-            val version = properties.getProperty("maven-compile-plugin.version")
+            val version = properties.getProperty("maven-compiler-plugin.version")
             modified = modified.replace("\$version", version)
         }
 
