@@ -45,12 +45,6 @@
           "org.jetbrains.kotlin:kotlin-maven-allopen": "${kotlin.version}"
         }
       },
-      "org.apache.maven.plugins:maven-compiler-plugin": {
-        "configuration": {
-          "source": "${java.version}",
-          "target": "${java.version}"
-        }
-      },
       "org.apache.maven.plugins:maven-antrun-plugin": {
         "version": "1.8",
         "executions": {
@@ -99,6 +93,9 @@
         "mainClass": "${main.class}",
         "descriptorRef": "jar-with-dependencies",
         "finalName": "SA"
+      },
+      "$mvn.compiler": {
+        "javaVersion": "${java.version}"
       }
     }
   },

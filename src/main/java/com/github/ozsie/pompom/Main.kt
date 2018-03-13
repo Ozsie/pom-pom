@@ -1,6 +1,7 @@
 package com.github.ozsie.pompom
 
 import java.io.File
+import java.util.Properties
 import java.util.concurrent.TimeUnit
 
 private const val DEFAULT_POM_POM = "./pompom.json"
@@ -8,7 +9,17 @@ private const val OUTPUT_POM_XML = "./pom.xml"
 
 private const val TIMEOUT: Long = 60
 
+val properties: Properties = "/default-values.properties".asProperties()
+
+fun String.asProperties(): Properties {
+    val content = this.javaClass::class.java.getResource(this).openStream()
+    val properties = Properties()
+    properties.load(content)
+    return properties
+}
+
 fun main(args : Array<String>) {
+
     when(args[0]) {
         "build" -> println("build")
         "generate" -> run {

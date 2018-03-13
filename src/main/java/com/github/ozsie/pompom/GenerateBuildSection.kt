@@ -3,6 +3,8 @@ package com.github.ozsie.pompom
 import com.github.ozsie.pompom.model.Build
 import com.github.ozsie.pompom.model.Execution
 import com.github.ozsie.pompom.model.Plugin
+import com.github.ozsie.pompom.plugins.buildPluginForMvnCompiler
+import com.github.ozsie.pompom.plugins.buildPluginsForExecutableKotlin
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -49,60 +51,13 @@ fun buildBuild(build: Build, artifactId: String): Node {
                 val value = it.value
                 when(key) {
                     "\$kotlin.executable" -> {
-                        buildPluginsForExecutableKotlin(pluginsNode!!, value, finalName)
+                        pluginsNode?.buildPluginsForExecutableKotlin(value, finalName)
+                    }
+                    "\$mvn.compiler" -> {
+                        pluginsNode?.buildPluginForMvnCompiler(value)
                     }
                 }
             }
-        }
-    }
-}
-
-fun buildPluginsForExecutableKotlin(pluginsNode: Node, plugin: Map<String, String>, finalName: String?) {
-    val adapter = getPluginAdapter()
-    "/maven-jar-plugin.json".asResource {
-        var modified = it.
-                replace("\$mainClass", plugin["mainClass"].toString())
-        if (plugin["mvnJarVersion"] != null) {
-            modified = modified.replace("\$version", plugin["mvnJarVersion"].toString())
-        } else {
-            modified = modified.replace("\$version", "2.6")
-        }
-        if (plugin["addClassPath"] != null) {
-            modified = modified.replace("\$addClasspath", plugin["addClasspath"].toString())
-        } else {
-            modified = modified.replace("\$addClasspath", "true")
-        }
-
-        val mavenJarPlugin = adapter.fromJson(modified)
-
-        mavenJarPlugin?: throw NullPomException("Plugin should not be null")
-        pluginsNode.addNode(buildPlugin("org.apache.maven.plugins:maven-jar-plugin", mavenJarPlugin))
-    }
-
-    if (plugin["descriptorRef"] != null) {
-        "/maven-assembly-plugin.json".asResource {
-            var modified = it.replace("\$mainClass", plugin["mainClass"].toString()).
-                    replace("\$descriptorRef", plugin["descriptorRef"].toString())
-            if (plugin["mvnAssemblyVersion"] != null) {
-                modified = modified.replace("\$version", plugin["mvnAssemblyVersion"].toString())
-            } else {
-                modified = modified.replace("\$version", "2.6")
-            }
-            if (plugin["finalName"] != null) {
-                modified = modified.replace("\$finalName", "$finalName-${plugin["finalName"].toString()}")
-            } else {
-                modified = modified.replace("\$finalName", "$finalName-${plugin["descriptorRef"].toString()}")
-            }
-            if (plugin["appendAssemblyId"] != null) {
-                modified = modified.replace("\$appendAssemblyId", plugin["appendAssemblyId"].toString())
-            } else {
-                modified = modified.replace("\$appendAssemblyId", "false")
-            }
-
-            val mavenAssemblyPlugin = adapter.fromJson(modified)
-
-            mavenAssemblyPlugin?: throw NullPomException("Plugin should not be null")
-            pluginsNode.addNode(buildPlugin("org.apache.maven.plugins:maven-assembly-plugin", mavenAssemblyPlugin))
         }
     }
 }
