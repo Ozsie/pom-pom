@@ -403,5 +403,17 @@
 			HEAD
 		</tag>
 	</scm>
-	<distributionManagement/>
+	<distributionManagement>
+		<repository>
+			<id>
+				bintray-ozsie-maven
+			</id>
+			<name>
+				ozsie-maven
+			</name>
+			<url>
+				https: //api.bintray.com/maven/ozsie/maven/pom-pom/;publish=1
+			</url>
+		</repository>
+	</distributionManagement>
 </project>

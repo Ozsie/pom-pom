@@ -1,11 +1,12 @@
 package com.github.ozsie.pompom.generator
 
 import com.github.ozsie.pompom.NullPomException
-import com.github.ozsie.pompom.generator.json.getDependencies
-import com.github.ozsie.pompom.generator.json.getProperties
-import com.github.ozsie.pompom.generator.json.getText
+import com.github.ozsie.pompom.generator.json.*
 import com.github.ozsie.pompom.generator.xml.*
+import com.github.ozsie.pompom.model.DistributionManagement
 import com.github.ozsie.pompom.model.Pom
+import com.github.ozsie.pompom.model.Repository
+import com.github.ozsie.pompom.model.SCM
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -27,22 +28,30 @@ fun generateJson(xmlFile: String): String {
         var packaging = "jar"
         var properties: Map<String,String>? = HashMap<String, String>()
         var dependencies: Map<String, Any>? = HashMap<String, Any>()
+        var pluginRepositories: Map<String, Repository>? = HashMap<String, Repository>()
+        var repositories: Map<String, Repository>? = HashMap<String, Repository>()
+        var scm: SCM? = null
+        var distributionManagement: DistributionManagement? = null
         for (element in xml.children) {
             if (element is Node) {
                 when (element.nodeName) {
-                    "modelVersion" -> { modelVersion = element.getText() }
-                    "artifactId" -> { artifactId = element.getText() }
-                    "groupId" -> { groupId = element.getText() }
-                    "version" -> { version = element.getText() }
-                    "packaging" -> { packaging = element.getText() }
-                    "properties" -> { properties = element.getProperties() }
-                    "dependencies" -> { dependencies = element.getDependencies() }
+                    "modelVersion" -> modelVersion = element.getText()
+                    "artifactId" -> artifactId = element.getText()
+                    "groupId" -> groupId = element.getText()
+                    "version" -> version = element.getText()
+                    "packaging" -> packaging = element.getText()
+                    "properties" -> properties = element.getProperties()
+                    "dependencies" -> dependencies = element.getDependencies()
                     "build" -> {}
+                    "pluginRepositories" -> pluginRepositories = element.getRepositories("pluginRepository")
+                    "scm" -> scm = element.getSCM()
+                    "distributionManagement" -> distributionManagement = element.getDistributionManagement()
+                    "repositories" -> repositories = element.getRepositories("repository")
                 }
             }
         }
         val pom = Pom(modelVersion, "$groupId:$artifactId", version, packaging, properties, dependencies,
-                null, null, null, null, null)
+                null, pluginRepositories, scm, distributionManagement, repositories)
         return getPomAdapter().toJson(pom)
     }
 }

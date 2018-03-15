@@ -8,17 +8,25 @@ import org.redundent.kotlin.xml.xml
 fun buildDistributionManagement(distributionManagement: DistributionManagement): Node = with(distributionManagement) {
     return xml("distributionManagement") {
         if (repository != null) {
-            buildRepository("repository", repository.id!!, repository)
+            addNode(buildRepository("repository", repository.id!!, repository))
         }
     }
 }
 
 fun buildSCM(scm: SCM): Node = with(scm) {
     return xml("scm") {
-        "url" { -url }
-        "connection" { -connection }
-        "developerConnection" { -developerConnection}
-        "tag" { -tag }
+        if (url != null) {
+            "url" { -url }
+        }
+        if (connection != null) {
+            "connection" { -connection }
+        }
+        if (developerConnection != null) {
+            "developerConnection" { -developerConnection }
+        }
+        if (tag != null) {
+            "tag" { -tag }
+        }
     }
 }
 
