@@ -1,4 +1,4 @@
-package com.github.ozsie.pompom.generator.xml.plugins
+package com.github.ozsie.pompom.generator.xml.pompomplugins
 
 import com.github.ozsie.pompom.*
 import com.github.ozsie.pompom.generator.xml.asResource
