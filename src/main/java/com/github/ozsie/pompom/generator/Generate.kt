@@ -3,15 +3,13 @@ package com.github.ozsie.pompom.generator
 import com.github.ozsie.pompom.NullPomException
 import com.github.ozsie.pompom.generator.json.*
 import com.github.ozsie.pompom.generator.xml.*
-import com.github.ozsie.pompom.model.DistributionManagement
-import com.github.ozsie.pompom.model.Pom
-import com.github.ozsie.pompom.model.Repository
-import com.github.ozsie.pompom.model.SCM
+import com.github.ozsie.pompom.model.*
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import okio.Okio
 import org.redundent.kotlin.xml.Node
+import org.redundent.kotlin.xml.TextElement
 import org.redundent.kotlin.xml.parse
 import org.redundent.kotlin.xml.xml
 import java.io.File
@@ -28,6 +26,7 @@ fun generateJson(xmlFile: String): String {
         var packaging = "jar"
         var properties: Map<String,String>? = HashMap<String, String>()
         var dependencies: Map<String, Any>? = HashMap<String, Any>()
+        var build: Build? = null
         var pluginRepositories: Map<String, Repository>? = HashMap<String, Repository>()
         var repositories: Map<String, Repository>? = HashMap<String, Repository>()
         var scm: SCM? = null
@@ -42,7 +41,7 @@ fun generateJson(xmlFile: String): String {
                     "packaging" -> packaging = element.getText()
                     "properties" -> properties = element.getProperties()
                     "dependencies" -> dependencies = element.getDependencies()
-                    "build" -> {}
+                    "build" -> build = element.getBuild()
                     "pluginRepositories" -> pluginRepositories = element.getRepositories("pluginRepository")
                     "scm" -> scm = element.getSCM()
                     "distributionManagement" -> distributionManagement = element.getDistributionManagement()
@@ -51,10 +50,11 @@ fun generateJson(xmlFile: String): String {
             }
         }
         val pom = Pom(modelVersion, "$groupId:$artifactId", version, packaging, properties, dependencies,
-                null, pluginRepositories, scm, distributionManagement, repositories)
+                build, pluginRepositories, scm, distributionManagement, repositories)
         return getPomAdapter().toJson(pom)
     }
 }
+
 
 fun generateXml(pomFile: String): String {
     val adapter = getPomAdapter()
@@ -106,4 +106,10 @@ fun getPomAdapter(): JsonAdapter<Pom> {
             .build()
 
     return moshi.adapter(Pom::class.java)
+}
+
+fun Node.getText(): String {
+    return (this.first {
+        it is TextElement
+    } as TextElement).text.trim()
 }
